@@ -12,8 +12,18 @@
         android:title="new Reminder"
         app:showAsAction="never"/>
     <item
-        android:id="@+id/action_exit"
+        android:id="@+id/clean_all"
         android:orderInCategory="200"
+        android:title="clean All"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/add_all"
+        android:orderInCategory="300"
+        android:title="add All"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_exit"
+        android:orderInCategory="400"
         android:title="exit"
         app:showAsAction="never"/>
 
