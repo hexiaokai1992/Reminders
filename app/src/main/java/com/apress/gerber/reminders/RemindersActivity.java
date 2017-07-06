@@ -1,8 +1,11 @@
 package com.apress.gerber.reminders;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
@@ -172,9 +175,11 @@ public class RemindersActivity extends ActionBarActivity {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                        int nId = getIdFromPosition(masterListPosition);
+                        final Reminder reminder = mDbAdapter.fetchReminderById(nId);
+
                         if (position == 0) {
-                            int nId = getIdFromPosition(masterListPosition);
-                            Reminder reminder = mDbAdapter.fetchReminderById(nId);
+
                             fireCustomDialog(reminder);
 //delete reminder
                         } else if(position == 1) {
@@ -182,7 +187,18 @@ public class RemindersActivity extends ActionBarActivity {
                             mCursorAdapter.changeCursor(mDbAdapter.fetchAllReminders());
                         }else{
                             Log.v("时间","提醒");
-                            Date today = new Date();
+                            final Date today = new Date();
+                            TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener(){
+
+                                @Override
+                                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+                                    Date alarm = new Date(today.getYear(),today.getMonth(),today.getDate(),hourOfDay,minute);
+
+                                    scheduleReminder(alarm.getTime(),reminder.getContent());
+                                }
+
+                            };
                             new TimePickerDialog(RemindersActivity.this,null,today.getMonth(),today.getMinutes(),false).show();
 
                         }
@@ -206,6 +222,13 @@ public class RemindersActivity extends ActionBarActivity {
                 });
             }
         });
+
+    }
+
+    private void scheduleReminder(long time, String content) {
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE); Intent alarmIntent = new Intent(this, ReminderAlarmReceiver.class); alarmIntent.putExtra(ReminderAlarmReceiver.REMINDER_TEXT, content);
+        PendingIntent broadcast = PendingIntent.getBroadcast(this, 0, alarmIntent, 0); alarmManager.set(AlarmManager.RTC_WAKEUP, time, broadcast);
 
     }
 
