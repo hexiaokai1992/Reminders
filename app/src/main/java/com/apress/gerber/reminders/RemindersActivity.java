@@ -196,7 +196,7 @@ public class RemindersActivity extends ActionBarActivity {
                                     Date alarm = new Date(today.getYear(),today.getMonth(),today.getDate(),hourOfDay,minute);
 
                                     scheduleReminder(alarm.getTime(),reminder.getContent());
-                                }//ab
+                                }//abc
 
                             };
                             new TimePickerDialog(RemindersActivity.this,null,today.getMonth(),today.getMinutes(),false).show();
