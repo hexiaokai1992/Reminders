@@ -2,6 +2,7 @@ package com.apress.gerber.reminders;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
@@ -14,6 +15,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.*;
 import android.widget.*;
+
+import java.util.Date;
 
 public class RemindersActivity extends ActionBarActivity {
     private ListView mListView;
@@ -158,7 +161,7 @@ public class RemindersActivity extends ActionBarActivity {
                 Log.v("进入","点击条目"+masterListPosition);
                 AlertDialog.Builder builder = new AlertDialog.Builder(RemindersActivity.this);
                 ListView modeListView = new ListView(RemindersActivity.this);
-                String[] modes = new String[] { "Edit Reminder", "Delete Reminder" };
+                String[] modes = new String[] { "Edit Reminder", "Delete Reminder","Schedule Reminder" };
                 ArrayAdapter<String> modeAdapter = new ArrayAdapter<>(RemindersActivity.this,
                         android.R.layout.simple_list_item_1, android.R.id.text1, modes);
                 modeListView.setAdapter(modeAdapter);
@@ -174,9 +177,14 @@ public class RemindersActivity extends ActionBarActivity {
                             Reminder reminder = mDbAdapter.fetchReminderById(nId);
                             fireCustomDialog(reminder);
 //delete reminder
-                        } else {
+                        } else if(position == 1) {
                             mDbAdapter.deleteReminderById(getIdFromPosition(masterListPosition));
                             mCursorAdapter.changeCursor(mDbAdapter.fetchAllReminders());
+                        }else{
+                            Log.v("时间","提醒");
+                            Date today = new Date();
+                            new TimePickerDialog(RemindersActivity.this,null,today.getMonth(),today.getMinutes(),false).show();
+
                         }
                         dialog.dismiss();
 
@@ -322,7 +330,7 @@ public class RemindersActivity extends ActionBarActivity {
         });
         dialog.show();
     }
-
+//随便
     public boolean onCreateOptionsMenu(Menu menu) {
         // TODO Auto-generated method stub
         MenuInflater inflator = new MenuInflater(this);
