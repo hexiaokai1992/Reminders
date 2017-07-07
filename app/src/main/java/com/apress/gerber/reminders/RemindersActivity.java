@@ -201,6 +201,7 @@ public class RemindersActivity extends ActionBarActivity {
                             };
                             new TimePickerDialog(RemindersActivity.this,null,today.getMonth(),today.getMinutes(),false).show();
 
+
                         }
                         dialog.dismiss();
 
